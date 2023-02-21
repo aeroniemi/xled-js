@@ -21,10 +21,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          registry: https://npm.pkg.github.com/
+          scope: "@aeroniemi"
       - name: Install NPM dependencies
         run: npm ci
       - name: Build TypeScript
         run: tsc
-      - run: npm publish --registry=https://npm.pkg.github.com/ --scope="@aeroniemi"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: |
+            *
+            !node-modules/*
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
