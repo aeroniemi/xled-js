@@ -230,7 +230,6 @@ export class Light {
 	}
 	async setRGBColourRealTime(colour: rgbColour): Promise<void> {
 		let frame = new OneColourFrame(colour, await this.getNLeds());
-		console.log(frame);
 		await this.sendRealTimeFrame(frame);
 	}
 
