@@ -9,6 +9,7 @@
 			"**/*.js": {
 				"when": "$(basename).ts"
 			}
-		}
+		},
+		"workbench.colorTheme": "Solarized Dark"
 	}
 }
