@@ -325,6 +325,9 @@ export class Light {
 		}
 		return res.data;
 	}
+	async sendRealTimeFrameUDP(frame: Frame) {
+		
+	}
 	async getListOfMovies() {
 		let res = await this.sendGetRequest("/movies", {});
 		let movies: Movie[] = res.movies.map((data: any) => {
