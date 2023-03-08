@@ -126,3 +126,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 test.ts
+xled-js.code-workspace
