@@ -451,12 +451,32 @@ export interface timer {
 	time_off: number;
 }
 
-class Frame {
+/**
+ * A frame of LEDs, used when you wish to set colour pixel by pixel
+ *
+ * @export
+ * @class Frame
+ * @typedef {Frame}
+ */
+export class Frame {
 	leds: Led[];
-	constructor(leds: Led[], nleds: number) {
+
+	/**
+	 * Creates an instance of Frame.
+	 *
+	 * @constructor
+	 * @param {Led[]} leds Array of Led, of same length as nleds
+	 */
+	constructor(leds: Led[]) {
 		this.leds = leds;
 	}
-	toOctet() {
+
+	/**
+	 * Output the frame as a Uint8Array of bytes
+	 *
+	 * @returns {Uint8Array}
+	 */
+	toOctet(): Uint8Array {
 		let bytes = this.leds.map((led) => {
 			return led.toOctet();
 		});
@@ -468,11 +488,36 @@ class Frame {
 		});
 		return output;
 	}
+
+	/**
+	 * Get the number of LEDs in this frame
+	 *
+	 * @returns {number}
+	 */
+	getNLeds(): number {
+		return this.leds.length;
+	}
 }
+
+/**
+ * Easy way to create an entire frame of one colour
+ *
+ * @export
+ * @class OneColourFrame
+ * @typedef {OneColourFrame}
+ * @extends {Frame}
+ */
 export class OneColourFrame extends Frame {
+	/**
+	 * Creates an instance of OneColourFrame.
+	 *
+	 * @constructor
+	 * @param {rgbColour} rgb
+	 * @param {number} nleds Number of LEDs to include in this frame (probably the number of LEDs in the string)
+	 */
 	constructor(rgb: rgbColour, nleds: number) {
 		let leds: Led[] = Array(nleds).fill(new Led(rgb.red, rgb.green, rgb.blue));
-		super(leds, nleds);
+		super(leds);
 	}
 }
 
