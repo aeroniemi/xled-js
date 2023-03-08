@@ -1,6 +1,6 @@
 {
   "name": "xled2",
-  "version": "1.2.6",
+  "version": "1.3.0",
   "description": "Library to control Twinkly LED lights",
   "homepage": "https://github.com/aeroniemi/xled#readme",
   "main": "dist/index.js",
