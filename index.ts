@@ -2,7 +2,7 @@
 import { randomBytes } from "node:crypto";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import delay from "delay";
-
+import * as udp from "node:dgram";
 // create error
 let errNoToken = Error("No valid token");
 
@@ -18,6 +18,7 @@ export class Light {
 	token: AuthenticationToken | undefined;
 	activeLoginCall: boolean;
 	nleds: number | undefined;
+	udpClient: udp.Socket;
 	/**
 	 * Creates an instance of Light.
 	 *
@@ -32,6 +33,7 @@ export class Light {
 			timeout: timeout,
 		});
 		this.activeLoginCall = false;
+		this.udpClient = udp.createSocket("udp4");
 	}
 	async autoEndLoginCall(): Promise<void> {
 		await delay(1000);
@@ -326,7 +328,27 @@ export class Light {
 		return res.data;
 	}
 	async sendRealTimeFrameUDP(frame: Frame) {
-		
+		if (!this.token) throw errNoToken;
+
+		// Generate the header
+		let tokenArray = this.token.getTokenDecoded();
+		let udpHeader = Buffer.alloc(tokenArray.length + 4);
+
+		udpHeader.writeUInt8(0x03); // the version number
+		udpHeader.fill(tokenArray, 1); // the actual token, 8 bytes
+		udpHeader.writeUInt8(0x00, tokenArray.length + 1); // zero blanking
+		udpHeader.writeUInt8(0x00, tokenArray.length + 2); // zero blanking
+		udpHeader.writeUInt8(0x00, tokenArray.length + 3); // number of packets (currently only 1 as i only hav 250 leds)
+
+		// Generate the body
+		const data = Buffer.alloc(udpHeader.length + frame.getNLeds() * 3);
+		data.fill(udpHeader);
+		data.fill(frame.toOctet(), udpHeader.length);
+		this.udpClient.send(data, 7777, this.ipaddr, (error) => {
+			if (error) {
+				console.warn(error);
+			}
+		});
 	}
 	async getListOfMovies() {
 		let res = await this.sendGetRequest("/movies", {});
