@@ -475,16 +475,39 @@ export class OneColourFrame extends Frame {
 		super(leds, nleds);
 	}
 }
-class Led {
+
+/**
+ * A RGB led
+ *
+ * @export
+ * @class Led
+ * @typedef {Led}
+ */
+export class Led {
 	red: number;
 	green: number;
 	blue: number;
+
+	/**
+	 * Creates an instance of Led.
+	 *
+	 * @constructor
+	 * @param {number} red
+	 * @param {number} green
+	 * @param {number} blue
+	 */
 	constructor(red: number, green: number, blue: number) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
 	}
-	toOctet() {
+
+	/**
+	 * Returns the LED in octet form
+	 *
+	 * @returns {Uint8Array}
+	 */
+	toOctet(): Uint8Array {
 		return new Uint8Array([this.red, this.green, this.blue]);
 	}
 }
